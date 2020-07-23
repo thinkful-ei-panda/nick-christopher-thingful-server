@@ -18,6 +18,8 @@ function requireAuth(req, res, next) {
     .toString()
     .split(':');
 
+  console.log(tokenUserName, tokenPassword);
+
   if (!tokenUserName || !tokenPassword) {
     return res.status(401).json({ error: 'Unauthorized request' });
   }
@@ -27,12 +29,13 @@ function requireAuth(req, res, next) {
     .first()
     .then(user => {
       if (!user) {
-        return res.status(401).json({ error: 'Unauthorized request' });
+        console.log(user);
+        return res.status(401).json({ error: 'Unauthorized request username' });
       }
       return bcrypt.compare(tokenPassword, user.password)
         .then(passwordsMatch => {
           if (!passwordsMatch) {
-            return res.status(401).json({ error: 'Unauthorized request' });
+            return res.status(401).json({ error: 'Unauthorized request password' });
           }
           req.user = user;
           next();
